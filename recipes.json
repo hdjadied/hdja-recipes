@@ -1,0 +1,76 @@
+{
+  "recipes": [
+    {
+      "id": "recipe-001",
+      "title": "Spaghetti Carbonara",
+      "description": "Classic Roman pasta with eggs, cheese and pancetta",
+      "ingredients": [
+        "200g spaghetti",
+        "2 eggs",
+        "100g pancetta",
+        "50g parmesan",
+        "black pepper",
+        "salt"
+      ],
+      "instructions": [
+        "Boil salted water and cook spaghetti",
+        "Fry pancetta until crispy",
+        "Beat eggs with parmesan",
+        "Mix pasta with pancetta and egg mixture",
+        "Serve with pepper"
+      ],
+      "tags": ["italian", "pasta", "quick"],
+      "prepTimeMinutes": 20,
+      "servings": 2
+    },
+
+    {
+      "id": "recipe-002",
+      "title": "Chicken Soup",
+      "description": "Comforting soup with chicken and vegetables",
+      "ingredients": [
+        "1 chicken breast",
+        "1 carrot",
+        "1 onion",
+        "1 celery stalk",
+        "1 liter chicken broth",
+        "salt",
+        "pepper"
+      ],
+      "instructions": [
+        "Dice vegetables",
+        "Cook chicken in broth",
+        "Add vegetables",
+        "Simmer 20 minutes",
+        "Season with salt and pepper"
+      ],
+      "tags": ["soup", "comfort", "healthy"],
+      "prepTimeMinutes": 35,
+      "servings": 4
+    },
+
+    {
+      "id": "recipe-003",
+      "title": "Fluffy Pancakes",
+      "description": "Soft breakfast pancakes",
+      "ingredients": [
+        "1 cup flour",
+        "1 egg",
+        "1 cup milk",
+        "1 tablespoon sugar",
+        "1 teaspoon baking powder",
+        "butter"
+      ],
+      "instructions": [
+        "Mix dry ingredients",
+        "Add egg and milk",
+        "Whisk until smooth",
+        "Cook in buttered pan",
+        "Serve with syrup"
+      ],
+      "tags": ["breakfast", "sweet"],
+      "prepTimeMinutes": 15,
+      "servings": 2
+    }
+  ]
+}
