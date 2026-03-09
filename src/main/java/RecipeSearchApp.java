@@ -1,119 +1,47 @@
-import com.fasterxml.jackson.databind.ObjectMapper;
-import org.apache.lucene.analysis.standard.StandardAnalyzer;
-import org.apache.lucene.document.*;
-import org.apache.lucene.index.*;
-import org.apache.lucene.queryparser.classic.QueryParser;
-import org.apache.lucene.search.*;
-import org.apache.lucene.store.*;
-
 import java.io.File;
-import java.nio.file.Paths;
 import java.util.List;
+import java.util.stream.Collectors;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class RecipeSearchApp {
-
-    public static class RecipeList {
-        public List<Recipe> recipes;
-    }
 
     public static class Recipe {
         public String id;
         public String title;
-        public String description;
         public List<String> ingredients;
-        public List<String> instructions;
+        public String instructions;
+        public String cookTime;
+        public int servings;
         public List<String> tags;
-        public Number prepTimeMinutes;
-        public Number servings;
     }
 
-    // ----- Main -----
+    private List<Recipe> recipes;
 
-    public static void main(String[] args) throws Exception {
-
-        String indexPath = "index";
-        String jsonPath = "recipes.json";
-
-        indexRecipes(jsonPath, indexPath);
-
-        if (args.length == 0) {
-            System.out.println("Usage: java RecipeSearchApp <search-term>");
-            return;
-        }
-
-        searchRecipes(args[0], indexPath);
-    }
-
-    // ----- Index Recipes -----
-
-    public static void indexRecipes(String jsonFile, String indexDir) throws Exception {
-
+    public void buildIndex(String jsonFile) throws Exception {
         ObjectMapper mapper = new ObjectMapper();
-        RecipeList recipeList = mapper.readValue(new File(jsonFile), RecipeList.class);
-
-        Directory dir = FSDirectory.open(Paths.get(indexDir));
-        StandardAnalyzer analyzer = new StandardAnalyzer();
-
-        IndexWriterConfig config = new IndexWriterConfig(analyzer);
-        IndexWriter writer = new IndexWriter(dir, config);
-
-        writer.deleteAll();
-
-        for (Recipe recipe : recipeList.recipes) {
-
-            Document doc = new Document();
-
-            doc.add(new StringField("id", recipe.id, Field.Store.YES));
-            doc.add(new TextField("title", recipe.title, Field.Store.YES));
-            doc.add(new TextField("description", recipe.description, Field.Store.YES));
-
-            doc.add(new TextField(
-                    "ingredients",
-                    String.join(" ", recipe.ingredients),
-                    Field.Store.YES));
-
-            doc.add(new TextField(
-                    "instructions",
-                    String.join(" ", recipe.instructions),
-                    Field.Store.NO));
-
-            doc.add(new TextField(
-                    "tags",
-                    String.join(" ", recipe.tags),
-                    Field.Store.YES));
-
-            writer.addDocument(doc);
-        }
-
-        writer.close();
-        System.out.println("Index built successfully.");
+        recipes = List.of(mapper.readValue(new File(jsonFile), Recipe[].class));
+        System.out.println("Index built successfully with " + recipes.size() + " recipes.");
     }
 
-    // ----- Search Recipes -----
+    public List<Recipe> search(String keyword) {
+        String lower = keyword.toLowerCase();
+        return recipes.stream()
+                .filter(r -> r.title.toLowerCase().contains(lower)
+                        || r.ingredients.stream().anyMatch(i -> i.toLowerCase().contains(lower))
+                        || r.tags.stream().anyMatch(t -> t.toLowerCase().contains(lower))
+                        || r.instructions.toLowerCase().contains(lower))
+                .collect(Collectors.toList());
+    }
 
-    public static void searchRecipes(String queryStr, String indexDir) throws Exception {
-
-        Directory dir = FSDirectory.open(Paths.get(indexDir));
-        DirectoryReader reader = DirectoryReader.open(dir);
-        IndexSearcher searcher = new IndexSearcher(reader);
-
-        StandardAnalyzer analyzer = new StandardAnalyzer();
-
-        QueryParser parser = new QueryParser("ingredients", analyzer);
-        Query query = parser.parse(queryStr);
-
-        TopDocs results = searcher.search(query, 10);
-
-        System.out.println("\nSearch results for: " + queryStr);
-
-        for (ScoreDoc scoreDoc : results.scoreDocs) {
-            Document doc = searcher.doc(scoreDoc.doc);
-
-            System.out.println("------------------------");
-            System.out.println("Title: " + doc.get("title"));
-            System.out.println("Ingredients: " + doc.get("ingredients"));
+    // Optional CLI test
+    public static void main(String[] args) throws Exception {
+        if (args.length == 0) args = new String[]{"pasta"};
+        RecipeSearchApp app = new RecipeSearchApp();
+        app.buildIndex("recipes.json");
+        List<Recipe> results = app.search(args[0]);
+        System.out.println("Search results for: " + args[0]);
+        for (Recipe r : results) {
+            System.out.println(r.id + ": " + r.title + " (" + r.cookTime + ", serves " + r.servings + ")");
         }
-
-        reader.close();
     }
 }
