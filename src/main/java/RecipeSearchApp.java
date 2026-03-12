@@ -5,14 +5,21 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class RecipeSearchApp {
 
+    public static class Ingredient {
+        public String name;
+        public Double quantity;
+        public String unit;
+    }
+
     public static class Recipe {
         public String id;
         public String title;
-        public List<String> ingredients;
+        public List<Ingredient> ingredients;
         public String instructions;
         public String cookTime;
         public int servings;
         public List<String> tags;
+        public String image;
     }
 
     private List<Recipe> recipes;
@@ -36,7 +43,7 @@ public class RecipeSearchApp {
 
                         boolean match =
                                 fuzzyMatch(r.title, term)
-                                || fuzzyListMatch(r.ingredients, term)
+                                || fuzzyIngredientMatch(r.ingredients, term)
                                 || fuzzyListMatch(r.tags, term)
                                 || fuzzyMatch(r.instructions, term);
 
@@ -71,7 +78,7 @@ public class RecipeSearchApp {
 
         for (String f : fridge) {
             boolean found = r.ingredients.stream()
-                    .anyMatch(i -> fuzzyMatch(i, f));
+                    .anyMatch(i -> fuzzyMatch(i.name, f));
 
             if (found) matches++;
         }
@@ -79,30 +86,34 @@ public class RecipeSearchApp {
         return matches;
     }
 
-public List<String> getAllIngredients() {
-    return recipes.stream()
-        .flatMap(r -> r.ingredients.stream())
-        .map(i -> i.toLowerCase())
-        .distinct()
-        .sorted()
-        .toList();
-}
+    public List<String> getAllIngredients() {
+        return recipes.stream()
+                .flatMap(r -> r.ingredients.stream())
+                .map(i -> i.name.toLowerCase())
+                .distinct()
+                .sorted()
+                .toList();
+    }
 
-public List<String> missingIngredients(Recipe r, String[] fridge) {
-    return r.ingredients.stream()
-        .filter(i -> 
-            java.util.Arrays.stream(fridge)
-                .noneMatch(f -> fuzzyMatch(i, f))
-        )
-        .toList();
-}
+    public List<String> missingIngredients(Recipe r, String[] fridge) {
+        return r.ingredients.stream()
+                .map(i -> i.name)
+                .filter(name ->
+                        java.util.Arrays.stream(fridge)
+                                .noneMatch(f -> fuzzyMatch(name, f))
+                )
+                .toList();
+    }
 
+    public List<Recipe> getRecipes() {
+        return recipes;
+    }
 
-public List<Recipe> getRecipes() {
-    return recipes;
-}
+    // fuzzy helpers
 
-    // fuzzy helpers 4 typos
+    private boolean fuzzyIngredientMatch(List<Ingredient> list, String term) {
+        return list.stream().anyMatch(i -> fuzzyMatch(i.name, term));
+    }
 
     private boolean fuzzyListMatch(List<String> list, String term) {
         return list.stream().anyMatch(i -> fuzzyMatch(i, term));

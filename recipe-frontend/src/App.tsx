@@ -1,13 +1,20 @@
 import { useState, useEffect } from "react";
 
+type Ingredient = {
+  name: string;
+  quantity?: number;
+  unit?: string;
+};
+
 type Recipe = {
   id: string;
   title: string;
-  ingredients: string[];
+  ingredients: Ingredient[];
   instructions: string;
   cookTime: string;
   servings: number;
   tags: string[];
+  image?: string;
 };
 
 function App() {
@@ -52,25 +59,50 @@ function App() {
   };
 
   return (
-    <div style={{ fontFamily: "Arial", padding: "40px" }}>
-      <h1>Recipe Search</h1>
+    <div style={{ padding: "40px" }}>
+      <header className="top">
+  <div className="title">
+    <h1>hdja recipies</h1>
+    <p>all my recipes written on scraps piece of paper in a webpage</p>
+  </div>
 
+  <div className="links">
+    <div>
+      <h4>contacts</h4>
+      <a href="mailto:heidija.birzniece@gmail.com">heidija.birzniece@gmail.com</a>
+    </div>
+
+    <div>
+      <h4>hdja etc.</h4>
+      <a href="https://linkedin.com/in/heidija-b-aa837a388/" target="_blank">linkedin</a>
+      <br />
+      <a href="https://github.com/hdjadied" target="_blank">github</a>
+    </div>
+
+    <div>
+      <h4>hdja tats</h4>
+      <p>portfolio</p>
+      <p>available flash</p>
+      <p>fresh/healed</p>
+    </div>
+  </div>
+</header>
       <div style={{ marginBottom: "30px" }}>
         <input
           type="text"
-          placeholder="Search recipes..."
+          placeholder="search recipes..."
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           onKeyDown={(e) => e.key === "Enter" && searchRecipes()}
           style={{ padding: "6px 10px", width: "250px", marginRight: "10px" }}
         />
-        <button onClick={searchRecipes}>Search</button>
+        <button onClick={searchRecipes}>search</button>
         <button onClick={fetchRandomRecipe} style={{ marginLeft: "10px" }}>
-          🎲 Random Recipe
+          random recipe button
         </button>
       </div>
 
-      <h2>What's in your fridge?</h2>
+      <h2>sooo.. what do you have at hand?</h2>
       <div style={{ display: "flex", flexWrap: "wrap", gap: "6px", marginBottom: "10px" }}>
         {ingredients.map((i) => {
           const isSelected = selected.includes(i);
@@ -87,8 +119,8 @@ function App() {
               style={{
                 padding: "6px 12px",
                 borderRadius: "16px",
-                border: `1px solid ${isSelected ? "#4caf50" : "#ccc"}`,
-                backgroundColor: isSelected ? "#4caf50" : "#f0f0f0",
+                border: `1px solid ${isSelected ? "#ad4caf" : "#ccc"}`,
+                backgroundColor: isSelected ? "#ad4caf" : "#f0f0f0",
                 color: isSelected ? "white" : "black",
                 cursor: "pointer",
                 userSelect: "none",
@@ -99,7 +131,7 @@ function App() {
           );
         })}
       </div>
-      <button onClick={searchFridge}>Find Recipes</button>
+      <button onClick={searchFridge}>find recipes by selected ingredients</button>
 
       <div style={{ marginTop: "30px" }}>
         {recipes.map((r) => (
@@ -113,32 +145,40 @@ function App() {
             }}
           >
             <h2>{r.title}</h2>
+            {r.image && (
+              <img
+                src={r.image}
+                alt={r.title}
+                style={{ width: "100%", maxWidth: "300px", borderRadius: "8px", marginBottom: "10px" }}
+              />
+            )}
             <p>
-              <b>Cook time:</b> {r.cookTime} | <b>Servings:</b> {r.servings}
+              <b>cook time:</b> {r.cookTime} | <b>servings:</b> {r.servings}
             </p>
             <p>
-              <b>Ingredients:</b>{" "}
+              <b>ingredients:</b>{" "}
               {r.ingredients.map((ing) => {
-                const has = selected.includes(ing);
+                const has = selected.includes(ing.name);
                 return (
                   <span
-                    key={ing}
+                    key={ing.name}
                     style={{
                       marginRight: "4px",
-                      color: has ? "#4caf50" : "#000",
+                      color: has ? "#ad4caf" : "#000",
                       fontWeight: has ? "bold" : "normal",
                     }}
                   >
-                    {ing}
+                    {ing.quantity ? `${ing.quantity}${ing.unit ?? ""} ` : ""}
+                    {ing.name}
                   </span>
                 );
               })}
             </p>
             <p>
-              <b>Instructions:</b> {r.instructions}
+              <b>instructions:</b> {r.instructions}
             </p>
             <p>
-              <b>Tags:</b> {r.tags.join(", ")}
+              <b>tags:</b> {r.tags.join(", ")}
             </p>
           </div>
         ))}
