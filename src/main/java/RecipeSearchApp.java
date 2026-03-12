@@ -1,119 +1,155 @@
-import com.fasterxml.jackson.databind.ObjectMapper;
-import org.apache.lucene.analysis.standard.StandardAnalyzer;
-import org.apache.lucene.document.*;
-import org.apache.lucene.index.*;
-import org.apache.lucene.queryparser.classic.QueryParser;
-import org.apache.lucene.search.*;
-import org.apache.lucene.store.*;
-
 import java.io.File;
-import java.nio.file.Paths;
 import java.util.List;
+import java.util.stream.Collectors;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class RecipeSearchApp {
 
-    public static class RecipeList {
-        public List<Recipe> recipes;
+    public static class Ingredient {
+        public String name;
+        public Double quantity;
+        public String unit;
     }
 
     public static class Recipe {
         public String id;
         public String title;
-        public String description;
-        public List<String> ingredients;
-        public List<String> instructions;
+        public List<Ingredient> ingredients;
+        public String instructions;
+        public String cookTime;
+        public int servings;
         public List<String> tags;
-        public Number prepTimeMinutes;
-        public Number servings;
+        public String image;
     }
 
-    // ----- Main -----
+    private List<Recipe> recipes;
 
-    public static void main(String[] args) throws Exception {
-
-        String indexPath = "index";
-        String jsonPath = "recipes.json";
-
-        indexRecipes(jsonPath, indexPath);
-
-        if (args.length == 0) {
-            System.out.println("Usage: java RecipeSearchApp <search-term>");
-            return;
-        }
-
-        searchRecipes(args[0], indexPath);
-    }
-
-    // ----- Index Recipes -----
-
-    public static void indexRecipes(String jsonFile, String indexDir) throws Exception {
-
+    public void buildIndex(String jsonFile) throws Exception {
         ObjectMapper mapper = new ObjectMapper();
-        RecipeList recipeList = mapper.readValue(new File(jsonFile), RecipeList.class);
-
-        Directory dir = FSDirectory.open(Paths.get(indexDir));
-        StandardAnalyzer analyzer = new StandardAnalyzer();
-
-        IndexWriterConfig config = new IndexWriterConfig(analyzer);
-        IndexWriter writer = new IndexWriter(dir, config);
-
-        writer.deleteAll();
-
-        for (Recipe recipe : recipeList.recipes) {
-
-            Document doc = new Document();
-
-            doc.add(new StringField("id", recipe.id, Field.Store.YES));
-            doc.add(new TextField("title", recipe.title, Field.Store.YES));
-            doc.add(new TextField("description", recipe.description, Field.Store.YES));
-
-            doc.add(new TextField(
-                    "ingredients",
-                    String.join(" ", recipe.ingredients),
-                    Field.Store.YES));
-
-            doc.add(new TextField(
-                    "instructions",
-                    String.join(" ", recipe.instructions),
-                    Field.Store.NO));
-
-            doc.add(new TextField(
-                    "tags",
-                    String.join(" ", recipe.tags),
-                    Field.Store.YES));
-
-            writer.addDocument(doc);
-        }
-
-        writer.close();
-        System.out.println("Index built successfully.");
+        recipes = List.of(mapper.readValue(new File(jsonFile), Recipe[].class));
+        System.out.println("Index built successfully with " + recipes.size() + " recipes.");
     }
 
-    // ----- Search Recipes -----
+    // search
 
-    public static void searchRecipes(String queryStr, String indexDir) throws Exception {
+    public List<Recipe> search(String query) {
 
-        Directory dir = FSDirectory.open(Paths.get(indexDir));
-        DirectoryReader reader = DirectoryReader.open(dir);
-        IndexSearcher searcher = new IndexSearcher(reader);
+        String[] terms = query.toLowerCase().split("\\s+");
 
-        StandardAnalyzer analyzer = new StandardAnalyzer();
+        return recipes.stream()
+                .filter(r -> {
 
-        QueryParser parser = new QueryParser("ingredients", analyzer);
-        Query query = parser.parse(queryStr);
+                    for (String term : terms) {
 
-        TopDocs results = searcher.search(query, 10);
+                        boolean match =
+                                fuzzyMatch(r.title, term)
+                                || fuzzyIngredientMatch(r.ingredients, term)
+                                || fuzzyListMatch(r.tags, term)
+                                || fuzzyMatch(r.instructions, term);
 
-        System.out.println("\nSearch results for: " + queryStr);
+                        if (match) return true;
+                    }
 
-        for (ScoreDoc scoreDoc : results.scoreDocs) {
-            Document doc = searcher.doc(scoreDoc.doc);
+                    return false;
+                })
+                .collect(Collectors.toList());
+    }
 
-            System.out.println("------------------------");
-            System.out.println("Title: " + doc.get("title"));
-            System.out.println("Ingredients: " + doc.get("ingredients"));
+    // fridge search
+
+    public List<Recipe> fridgeSearch(String ingredientsInput) {
+
+        String[] fridge = ingredientsInput.toLowerCase().split("\\s+");
+
+        return recipes.stream()
+                .sorted((a, b) -> {
+
+                    int matchA = countIngredientMatches(a, fridge);
+                    int matchB = countIngredientMatches(b, fridge);
+
+                    return Integer.compare(matchB, matchA);
+                })
+                .collect(Collectors.toList());
+    }
+
+    private int countIngredientMatches(Recipe r, String[] fridge) {
+
+        int matches = 0;
+
+        for (String f : fridge) {
+            boolean found = r.ingredients.stream()
+                    .anyMatch(i -> fuzzyMatch(i.name, f));
+
+            if (found) matches++;
         }
 
-        reader.close();
+        return matches;
+    }
+
+    public List<String> getAllIngredients() {
+        return recipes.stream()
+                .flatMap(r -> r.ingredients.stream())
+                .map(i -> i.name.toLowerCase())
+                .distinct()
+                .sorted()
+                .toList();
+    }
+
+    public List<String> missingIngredients(Recipe r, String[] fridge) {
+        return r.ingredients.stream()
+                .map(i -> i.name)
+                .filter(name ->
+                        java.util.Arrays.stream(fridge)
+                                .noneMatch(f -> fuzzyMatch(name, f))
+                )
+                .toList();
+    }
+
+    public List<Recipe> getRecipes() {
+        return recipes;
+    }
+
+    // fuzzy helpers
+
+    private boolean fuzzyIngredientMatch(List<Ingredient> list, String term) {
+        return list.stream().anyMatch(i -> fuzzyMatch(i.name, term));
+    }
+
+    private boolean fuzzyListMatch(List<String> list, String term) {
+        return list.stream().anyMatch(i -> fuzzyMatch(i, term));
+    }
+
+    private boolean fuzzyMatch(String text, String query) {
+
+        text = text.toLowerCase();
+        query = query.toLowerCase();
+
+        if (text.contains(query)) return true;
+
+        int distance = levenshteinDistance(text, query);
+
+        return distance <= 2;
+    }
+
+    private int levenshteinDistance(String a, String b) {
+
+        int[][] dp = new int[a.length() + 1][b.length() + 1];
+
+        for (int i = 0; i <= a.length(); i++) dp[i][0] = i;
+        for (int j = 0; j <= b.length(); j++) dp[0][j] = j;
+
+        for (int i = 1; i <= a.length(); i++) {
+            for (int j = 1; j <= b.length(); j++) {
+
+                int cost = a.charAt(i - 1) == b.charAt(j - 1) ? 0 : 1;
+
+                dp[i][j] = Math.min(
+                        Math.min(dp[i - 1][j] + 1, dp[i][j - 1] + 1),
+                        dp[i - 1][j - 1] + cost
+                );
+            }
+        }
+
+        return dp[a.length()][b.length()];
     }
 }

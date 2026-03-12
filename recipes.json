@@ -1,76 +1,123 @@
-{
-  "recipes": [
+[
+  {
+    "id": "r1",
+    "title": "tiramisu",
+    "ingredients": [
+      {"name": "cognac", "quantity": null, "unit": "q.b."},
+      {"name": "eggs", "quantity": 2, "unit": "pcs"},
+      {"name": "sugar", "quantity": 50, "unit": "g"},
+      {"name": "mascarpone", "quantity": 250, "unit": "g"},
+      {"name": "coffee", "quantity": null, "unit": "q.b."},
+      {"name": "cocoa powder", "quantity": null, "unit": "q.b."},
+      {"name": "vanilla powder", "quantity": null, "unit": "q.b."},
+      {"name": "ladyfingers", "quantity": 150, "unit": "g"}
+    ],
+    "instructions": "whisk egg yolks with sugar until pale. add mascarpone and mix until smooth. in a separate bowl, whisk egg whites + pinch of vanilla powder until stiff peaks form. gently fold egg whites into mascarpone mixture. dip ladyfingers in coffee (by taste mixed with sugar + cognac + vanilla powder) and layer in a dish. spread half of the mascarpone mixture over the ladyfingers. repeat layers and finish with a dusting of cocoa powder. refrigerate for at least 4 hours before serving.",
+    "cookTime": "30 mins",
+    "servings": 4,
+    "tags": ["italian", "dessert", "alcohol", "coffee"],
+    "image": "/images/tiramisu.jpg"
+  },
+  {
+    "id": "r2",
+    "title": "ladyfingers",
+    "ingredients": [
+      {"name": "eggs", "quantity": 2, "unit": "pcs"},
+      {"name": "sugar", "quantity": 65, "unit": "g"},
+      {"name": "flour", "quantity": 54.6, "unit": "g"},
+      {"name": "baking powder", "quantity": 0.25, "unit": "tsp"}
+    ],
+    "instructions": "warm oven to 205c. line a baking tray with parchment paper. whisk egg whites on a high mixer speed until stiff peaks form. add 1tbsp of sugar and whisk for 30 seconds. in a separate bowl, whisk egg yolks with the remaining sugar until pale and fluffy. gently fold the 1/2 egg white mixture into the egg yolks. sift flour and baking powder over the mixture and gently fold until just combined. fold in the rest of the egg whites. transfer the batter to a piping bag fitted with a round tip (or just lay with a spoon). pipe 10cm long fingers onto the prepared baking tray, leaving space between each. bake for 8 minutes or until golden. let cool before using in recipes like tiramisu.",
+    "cookTime": "40 mins",
+    "servings": 4,
+    "tags": ["cookies", "tiramisu", "dessert"],
+    "image": "/images/ladyfingers.jpg"
+  },
+  {
+    "id": "r3",
+    "title": "yeast prep",
+    "ingredients": [
+      {"name": "yeast", "quantity": null, "unit": "q.b."},
+      {"name": "sugar", "quantity": 1, "unit": "tsp"},
+      {"name": "water", "quantity": 2, "unit": "tbsp"},
+      {"name": "butter", "quantity": null, "unit": "q.b."}
+    ],
+    "instructions": "pour yeast in a small bowl/cup. add 1tsp of sugar and warm water 2-3tbsp. stir until yeast forms foam. add warm milk/water q.b. and then add butter/oil q.b. then add rest of the ingredients needed for your dough. keep it covered and warm and let it rise.",
+    "cookTime": "10 mins",
+    "servings": 1,
+    "tags": ["yeast", "pastry"],
+    "image": "/images/yeast-prep.jpg"
+  },
+  {
+    "id": "r4",
+    "title": "classic cheesecake",
+    "ingredients": [
+      {"name": "biscuits", "quantity": 180, "unit": "g"},
+      {"name": "butter", "quantity": 50, "unit": "g"},
+      {"name": "amaretto", "quantity": 1, "unit": "tbsp"},
+      {"name": "cream cheese", "quantity": 750, "unit": "g"},
+      {"name": "sugar", "quantity": 150, "unit": "g"},
+      {"name": "starch", "quantity": 3, "unit": "tbsp"},
+      {"name": "vanilla powder", "quantity": null, "unit": "q.b."},
+      {"name": "eggs", "quantity": 5, "unit": "pcs"},
+      {"name": "sour cream", "quantity": 100, "unit": "g"},
+      {"name": "sweet cream", "quantity": 50, "unit": "g"}
+    ],
+    "instructions": "prepare a round Ø24 baking pan with parchment paper. in a large bowl crush the biscuits and add melted butter. mix and then press the mixture into the bottom of the pan. Bake for 10 minutes at 175C. in a seperate bowl, mix on a low speed the cream cheese, amaretto, sugar. then add starch (potato/corn), vanilla powder, eggs, sour cream. mix and then add sweet cream - only mix it lightly DO NOT BEAT IT! pour the mixture in the pan where the baked crust is - bake 50 minutes at 175C (until the top has a golden color). let it cool before serving. by your taste/opportunity, you can prepare a sour jam or a sweet cream to decorate the top.",
+    "cookTime": "2 hours",
+    "servings": 12,
+    "tags": ["dessert", "cake"],
+    "image": "/images/cheesecake.jpg"
+  },
+  {
+    "id": "r5",
+    "title": "cranberry jam - perfect for cheesecakes",
+    "ingredients": [
+      {"name": "cranberries", "quantity": 400, "unit": "g"},
+      {"name": "sugar", "quantity": 110, "unit": "g"},
+      {"name": "lemon zest", "quantity": 1, "unit": "tbsp"},
+      {"name": "cinnamon stick", "quantity": 1, "unit": "piece"},
+      {"name": "gingerbread spices", "quantity": null, "unit": "q.b."},
+      {"name": "water", "quantity": 2, "unit": "tbsp"}
+    ],
+    "instructions": "combine fresh or frozen cranberries with sugar in a saucepan with spices and zest. cook over medium heat, stirring occasionally, until berries burst and mixture thickens (about 20-25 minutes). if you like to have it more 'jammy', crush/squish the mixture. let cool before using.",
+    "cookTime": "30 mins",
+    "servings": 6,
+    "tags": ["dessert", "jam", "sauce"],
+    "image": "/images/cranberry-jam.jpg"
+  },
     {
-      "id": "recipe-001",
-      "title": "Spaghetti Carbonara",
-      "description": "Classic Roman pasta with eggs, cheese and pancetta",
-      "ingredients": [
-        "200g spaghetti",
-        "2 eggs",
-        "100g pancetta",
-        "50g parmesan",
-        "black pepper",
-        "salt"
-      ],
-      "instructions": [
-        "Boil salted water and cook spaghetti",
-        "Fry pancetta until crispy",
-        "Beat eggs with parmesan",
-        "Mix pasta with pancetta and egg mixture",
-        "Serve with pepper"
-      ],
-      "tags": ["italian", "pasta", "quick"],
-      "prepTimeMinutes": 20,
-      "servings": 2
-    },
-
+    "id": "r6",
+    "title": "sweet cream - perfect for cheesecakes",
+    "ingredients": [
+      {"name": "cream cheese", "quantity": null, "unit": "pack"},
+      {"name": "butter", "quantity": 2, "unit": "tbsp"},
+      {"name": "sugar", "quantity": 2, "unit": "tbsp"},
+      {"name": "vanilla powder", "quantity": 1, "unit": "tsp"},
+      {"name": "honey", "quantity": 1, "unit": "tbsp"},
+      {"name": "moka", "quantity": null, "unit": "q.b."}
+    ],
+    "instructions": "beat cream cheese, butter, sugar, vanilla powder. when mixture thickens, add honey and moka - do not overbeat it!",
+    "cookTime": "10 mins",
+    "servings": 6,
+    "tags": ["dessert", "coffee"],
+    "image": "/images/cranberry-jam.jpg"
+  },
     {
-      "id": "recipe-002",
-      "title": "Chicken Soup",
-      "description": "Comforting soup with chicken and vegetables",
-      "ingredients": [
-        "1 chicken breast",
-        "1 carrot",
-        "1 onion",
-        "1 celery stalk",
-        "1 liter chicken broth",
-        "salt",
-        "pepper"
-      ],
-      "instructions": [
-        "Dice vegetables",
-        "Cook chicken in broth",
-        "Add vegetables",
-        "Simmer 20 minutes",
-        "Season with salt and pepper"
-      ],
-      "tags": ["soup", "comfort", "healthy"],
-      "prepTimeMinutes": 35,
-      "servings": 4
-    },
-
-    {
-      "id": "recipe-003",
-      "title": "Fluffy Pancakes",
-      "description": "Soft breakfast pancakes",
-      "ingredients": [
-        "1 cup flour",
-        "1 egg",
-        "1 cup milk",
-        "1 tablespoon sugar",
-        "1 teaspoon baking powder",
-        "butter"
-      ],
-      "instructions": [
-        "Mix dry ingredients",
-        "Add egg and milk",
-        "Whisk until smooth",
-        "Cook in buttered pan",
-        "Serve with syrup"
-      ],
-      "tags": ["breakfast", "sweet"],
-      "prepTimeMinutes": 15,
-      "servings": 2
-    }
-  ]
-}
+    "id": "r7",
+    "title": "banana bread",
+    "ingredients": [
+      {"name": "cream cheese", "quantity": null, "unit": "pack"},
+      {"name": "butter", "quantity": 2, "unit": "tbsp"},
+      {"name": "sugar", "quantity": 2, "unit": "tbsp"},
+      {"name": "vanilla powder", "quantity": 1, "unit": "tsp"},
+      {"name": "honey", "quantity": 1, "unit": "tbsp"},
+      {"name": "moka", "quantity": null, "unit": "q.b."}
+    ],
+    "instructions": "beat cream cheese, butter, sugar, vanilla powder. when mixture thickens, add honey and moka - do not overbeat it!",
+    "cookTime": "10 mins",
+    "servings": 6,
+    "tags": ["dessert", "gluten-free", "egg-free", "lactose-free"],
+    "image": "/images/cranberry-jam.jpg"
+  }
+]
