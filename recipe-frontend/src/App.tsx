@@ -24,12 +24,33 @@ function App() {
   const [ingredients, setIngredients] = useState<string[]>([]);
   const [selected, setSelected] = useState<string[]>([]);
 
+  const [expanded, setExpanded] = useState(false);
+
   useEffect(() => {
     fetch("http://localhost:4567/ingredients")
       .then((r) => r.json())
       .then(setIngredients)
       .catch(console.error);
   }, []);
+
+  useEffect(() => {
+    if (selected.length === 0) return;
+
+    const timeout = setTimeout(() => {
+      const fetchData = async () => {
+        const query = selected.join(" ");
+        const res = await fetch(
+          `http://localhost:4567/fridge?i=${encodeURIComponent(query)}`
+        );
+        const data: Recipe[] = await res.json();
+        setRecipes(data);
+      };
+
+      fetchData();
+    }, 300);
+
+    return () => clearTimeout(timeout);
+  }, [selected]);
 
   const searchRecipes = async () => {
     if (!query.trim()) return;
@@ -47,46 +68,54 @@ function App() {
     setRecipes([data]);
   };
 
-  const searchFridge = async () => {
-    if (selected.length === 0) return;
-
-    const query = selected.join(" ");
-    const res = await fetch(
-      `http://localhost:4567/fridge?i=${encodeURIComponent(query)}`
+  const toggleIngredient = (ingredient: string) => {
+    setSelected((prev) =>
+      prev.includes(ingredient)
+        ? prev.filter((x) => x !== ingredient)
+        : [...prev, ingredient]
     );
-    const data: Recipe[] = await res.json();
-    setRecipes(data);
   };
+
+  const visibleIngredients = expanded
+    ? ingredients
+    : ingredients.slice(0, 12);
 
   return (
     <div style={{ padding: "40px" }}>
       <header className="top">
-  <div className="title">
-    <h1>hdja recipies</h1>
-    <p>all my recipes written on scraps piece of paper in a webpage</p>
-  </div>
+        <div className="title">
+          <h1>hdja recipies</h1>
+          <p>all my recipes written on scraps piece of paper in a webpage</p>
+        </div>
 
-  <div className="links">
-    <div>
-      <h4>contacts</h4>
-      <a href="mailto:heidija.birzniece@gmail.com">heidija.birzniece@gmail.com</a>
-    </div>
+        <div className="links">
+          <div>
+            <h4>contacts</h4>
+            <a href="mailto:heidija.birzniece@gmail.com">
+              heidija.birzniece@gmail.com
+            </a>
+          </div>
 
-    <div>
-      <h4>hdja etc.</h4>
-      <a href="https://linkedin.com/in/heidija-b-aa837a388/" target="_blank">linkedin</a>
-      <br />
-      <a href="https://github.com/hdjadied" target="_blank">github</a>
-    </div>
+          <div>
+            <h4>hdja etc.</h4>
+            <a href="https://linkedin.com/in/heidija-b-aa837a388/" target="_blank">
+              linkedin
+            </a>
+            <br />
+            <a href="https://github.com/hdjadied" target="_blank">
+              github
+            </a>
+          </div>
 
-    <div>
-      <h4>hdja tats</h4>
-      <p>portfolio</p>
-      <p>available flash</p>
-      <p>fresh/healed</p>
-    </div>
-  </div>
-</header>
+          <div>
+            <h4>hdja tats</h4>
+            <p>portfolio</p>
+            <p>available flash</p>
+            <p>fresh/healed</p>
+          </div>
+        </div>
+      </header>
+
       <div style={{ marginBottom: "30px" }}>
         <input
           type="text"
@@ -102,28 +131,58 @@ function App() {
         </button>
       </div>
 
+      {selected.length > 0 && (
+        <div
+          style={{
+            position: "sticky",
+            top: 0,
+            background: "white",
+            padding: "10px 0",
+            zIndex: 10,
+            borderBottom: "1px solid #ddd",
+            marginBottom: "20px",
+          }}
+        >
+          <b>selected:</b>{" "}
+          {selected.map((s) => (
+            <span key={s} style={{ marginRight: "8px", color: "#ad4caf" }}>
+              {s}
+            </span>
+          ))}
+          <button
+            onClick={() => setSelected([])}
+            style={{ marginLeft: "10px" }}
+          >
+            clear all
+          </button>
+        </div>
+      )}
+
       <h2>sooo.. what do you have at hand?</h2>
-      <div style={{ display: "flex", flexWrap: "wrap", gap: "6px", marginBottom: "10px" }}>
-        {ingredients.map((i) => {
+
+      <div
+        style={{
+          display: "grid",
+          gridTemplateColumns: "repeat(auto-fill, minmax(100px, 1fr))",
+          gap: "6px",
+          marginBottom: "10px",
+        }}
+      >
+        {visibleIngredients.map((i) => {
           const isSelected = selected.includes(i);
           return (
             <div
               key={i}
-              onClick={() =>
-                setSelected(
-                  isSelected
-                    ? selected.filter((x) => x !== i)
-                    : [...selected, i]
-                )
-              }
+              onClick={() => toggleIngredient(i)}
               style={{
                 padding: "6px 12px",
                 borderRadius: "16px",
                 border: `1px solid ${isSelected ? "#ad4caf" : "#ccc"}`,
-                backgroundColor: isSelected ? "#ad4caf" : "#f0f0f0",
-                color: isSelected ? "white" : "black",
+                backgroundColor: isSelected ? "#f1a5e2" : "#f0f0f0",
+                color: "#94417c",
                 cursor: "pointer",
                 userSelect: "none",
+                textAlign: "center",
               }}
             >
               {i}
@@ -131,7 +190,12 @@ function App() {
           );
         })}
       </div>
-      <button onClick={searchFridge}>find recipes by selected ingredients</button>
+
+      {ingredients.length > 12 && (
+        <button onClick={() => setExpanded((prev) => !prev)}>
+          {expanded ? "show less" : "more ingredients..."}
+        </button>
+      )}
 
       <div style={{ marginTop: "30px" }}>
         {recipes.map((r) => (
@@ -145,16 +209,22 @@ function App() {
             }}
           >
             <h2>{r.title}</h2>
-            {r.image && (
-              <img
-                src={r.image}
-                alt={r.title}
-                style={{ width: "100%", maxWidth: "300px", borderRadius: "8px", marginBottom: "10px" }}
-              />
-            )}
+
+            <img
+              src={r.image}
+              alt={r.title}
+              style={{
+                width: "100%",
+                maxWidth: "300px",
+                borderRadius: "8px",
+                marginBottom: "10px",
+              }}
+            />
+
             <p>
               <b>cook time:</b> {r.cookTime} | <b>servings:</b> {r.servings}
             </p>
+
             <p>
               <b>ingredients:</b>{" "}
               {r.ingredients.map((ing) => {
@@ -174,9 +244,11 @@ function App() {
                 );
               })}
             </p>
+
             <p>
               <b>instructions:</b> {r.instructions}
             </p>
+
             <p>
               <b>tags:</b> {r.tags.join(", ")}
             </p>

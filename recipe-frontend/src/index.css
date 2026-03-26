@@ -82,7 +82,7 @@ button:focus-visible {
 
 .links p {
   margin: 2px 0;
-  color: #666;
+  color: #1c141e;
 }
 
 .title p {
@@ -96,8 +96,14 @@ button:focus-visible {
     color: #213547;
     background-color: #ffffff;
   }
+    a {
+    font-weight: 500;
+    color: #ad4caf;
+    text-decoration: none;
+  }
   a:hover {
-    color: #747bff;
+    color: #642665;
+    text-decoration: none;
   }
   button {
     background-color: #f9f9f9;
@@ -109,11 +115,31 @@ button:focus-visible {
     color: #ffffff;
     background-color: #94417c;
   }
+    a {
+      font-weight: 500;
+      color: #f1a5e2;
+      text-decoration: none;
+    }
+
   a:hover {
-    color: #747bff;
+    color: #ffffff;
   }
   button {
     background-color: #f9f9f9;
+    color:#642665;
   }
+
+  .links p {
+  margin: 2px 0;
+  color: #110913;
 }
 
+.title p {
+  color: #ffffff;
+}
+
+p{
+  color: #ffffff;
+}
+
+}
