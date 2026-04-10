@@ -1,7 +1,11 @@
 import java.io.File;
 import java.util.List;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.stream.Collectors;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.core.type.TypeReference;
+import java.sql.*;
 
 public class RecipeSearchApp {
 
@@ -19,15 +23,66 @@ public class RecipeSearchApp {
         public String cookTime;
         public int servings;
         public List<String> tags;
-        public String image;
+        public List<String> images;
     }
 
     private List<Recipe> recipes;
 
     public void buildIndex(String jsonFile) throws Exception {
         ObjectMapper mapper = new ObjectMapper();
-        recipes = List.of(mapper.readValue(new File(jsonFile), Recipe[].class));
-        System.out.println("Index built successfully with " + recipes.size() + " recipes.");
+        Recipe[] recipesArray = mapper.readValue(new File(jsonFile), Recipe[].class);
+        recipes = Arrays.asList(recipesArray);
+
+        // Build index if needed, but for now, just load
+        System.out.println("Loaded " + recipes.size() + " recipes from JSON.");
+    }
+
+    private List<String> parseImages(String imageStr, ObjectMapper mapper) throws Exception {
+        if (imageStr == null || imageStr.isEmpty()) {
+            return new ArrayList<>();
+        }
+        if (imageStr.startsWith("[")) {
+            return mapper.readValue(imageStr, new TypeReference<List<String>>(){});
+        } else {
+            return List.of(imageStr);
+        }
+    }
+
+    private List<Ingredient> loadIngredients(Connection conn, String recipeId) throws SQLException {
+        String sql = "SELECT i.name, ri.quantity, ri.unit FROM recipe_ingredients ri JOIN ingredients i ON ri.ingredient_id = i.id WHERE ri.recipe_id = ?";
+        PreparedStatement stmt = conn.prepareStatement(sql);
+        stmt.setString(1, recipeId);
+        ResultSet rs = stmt.executeQuery();
+
+        List<Ingredient> ings = new ArrayList<>();
+        while (rs.next()) {
+            Ingredient ing = new Ingredient();
+            ing.name = rs.getString("name");
+            String qty = rs.getString("quantity");
+            if (qty != null) {
+                try {
+                    ing.quantity = Double.parseDouble(qty);
+                } catch (NumberFormatException e) {
+                    ing.quantity = null;
+                }
+            }
+            ing.unit = rs.getString("unit");
+            ings.add(ing);
+        }
+        return ings;
+    }
+
+    private List<String> loadTags(Connection conn, String recipeId) throws SQLException {
+        String sql = "SELECT t.name FROM recipe_tags rt JOIN tags t ON rt.tag_id = t.id WHERE rt.recipe_id = ?";
+        PreparedStatement stmt = conn.prepareStatement(sql);
+        stmt.setString(1, recipeId);
+        ResultSet rs = stmt.executeQuery();
+
+        List<String> tags = new ArrayList<>();
+        while (rs.next()) {
+            tags.add(rs.getString("name"));
+        }
+        return tags;
     }
 
     // search

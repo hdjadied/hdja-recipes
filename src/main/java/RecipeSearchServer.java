@@ -1,7 +1,10 @@
 import static spark.Spark.*;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.List;
-import java.util.Random; 
+import java.util.Random;
+import java.io.File;
+import java.io.FileInputStream;
+import java.nio.file.Files;
 
 
 public class RecipeSearchServer {
@@ -14,6 +17,23 @@ public class RecipeSearchServer {
         ObjectMapper mapper = new ObjectMapper();
 
         port(4567);
+
+        // serve static images
+        get("/images/*", (req, res) -> {
+            String file = req.splat()[0];
+            File f = new File("images/" + file);
+            if (f.exists() && f.isFile()) {
+                String mime = Files.probeContentType(f.toPath());
+                if (mime == null) mime = "application/octet-stream";
+                res.type(mime);
+                try (FileInputStream fis = new FileInputStream(f)) {
+                    return fis.readAllBytes();
+                }
+            } else {
+                res.status(404);
+                return "Not found";
+            }
+        });
 
         before((req, res) -> {
             res.header("Access-Control-Allow-Origin", "*");
