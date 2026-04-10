@@ -16,7 +16,7 @@
     "cookTime": "30 mins",
     "servings": 4,
     "tags": ["italian", "dessert", "alcohol", "coffee"],
-    "image": "/images/tiramisu.jpg"
+    "images": []
   },
   {
     "id": "r2",
@@ -31,7 +31,7 @@
     "cookTime": "40 mins",
     "servings": 4,
     "tags": ["cookies", "tiramisu", "dessert"],
-    "image": "/images/ladyfingers.jpg"
+    "images": []
   },
   {
     "id": "r3",
@@ -46,7 +46,7 @@
     "cookTime": "10 mins",
     "servings": 1,
     "tags": ["yeast", "pastry"],
-    "image": "/images/yeast-prep.jpg"
+    "images": []
   },
   {
     "id": "r4",
@@ -67,7 +67,7 @@
     "cookTime": "2 hours",
     "servings": 12,
     "tags": ["dessert", "cake"],
-    "image": "~/images/cheesecake_slice.jpg"
+    "images": ["/images/cheesecake_slice.jpeg", "/images/dog_cheesecake.jpeg", "/images/full_cheescake.jpeg"]
   },
   {
     "id": "r5",
@@ -84,7 +84,7 @@
     "cookTime": "30 mins",
     "servings": 6,
     "tags": ["dessert", "jam", "sauce"],
-    "image": "/images/cranberry-jam.jpg"
+    "images": []
   },
     {
     "id": "r6",
@@ -101,7 +101,7 @@
     "cookTime": "10 mins",
     "servings": 6,
     "tags": ["dessert", "coffee"],
-    "image": "/images/cranberry-jam.jpg"
+    "images": []
   },
     {
     "id": "r7",
@@ -127,7 +127,7 @@
     "cookTime": "2 hours",
     "servings": 6,
     "tags": ["dessert", "gluten-free", "egg-free", "lactose-free"],
-    "image": "/images/cranberry-jam.jpg"
+    "images": []
   },
   {
     "id": "r8",
@@ -153,7 +153,7 @@
     "cookTime": "1 hour",
     "servings": 6,
     "tags": ["dessert", "gluten-free", "egg-free", "lactose-free"],
-    "image": "/images/cranberry-jam.jpg"
+    "images": []
   },
   {
     "id": "r9",
@@ -172,7 +172,7 @@
     "cookTime": "1 hour",
     "servings": 20,
     "tags": ["dessert", "latvian", "curd"],
-    "image": "/images/cranberry-jam.jpg"
+    "images": []
   },
   {
     "id": "r10",
@@ -196,7 +196,7 @@
     "cookTime": "2 hours",
     "servings": 20,
     "tags": ["dessert", "latvian", "curd"],
-    "image": "/images/cranberry-jam.jpg"
+    "images": []
   },
   {
     "id": "r11",
@@ -220,7 +220,7 @@
     "cookTime": "2 hours",
     "servings": 20,
     "tags": ["dessert", "latvian", "curd"],
-    "image": "/images/cranberry-jam.jpg"
+    "images": []
   },
   {
     "id": "r12",
@@ -244,7 +244,7 @@
     "cookTime": "2 hours",
     "servings": 20,
     "tags": ["dessert", "latvian", "curd"],
-    "image": "/images/cranberry-jam.jpg"
+    "images": []
   },
   {
     "id": "r13",
@@ -268,7 +268,7 @@
     "cookTime": "2 hours",
     "servings": 20,
     "tags": ["dessert", "latvian", "curd"],
-    "image": "/images/cranberry-jam.jpg"
+    "images": []
   },
   {
     "id": "r14",
@@ -292,7 +292,7 @@
     "cookTime": "2 hours",
     "servings": 20,
     "tags": ["dessert", "peanut", "caramel"],
-    "image": "/images/cranberry-jam.jpg"
+    "images": []
   },
   {
     "id": "r15",
@@ -316,6 +316,6 @@
     "cookTime": "2 hours",
     "servings": 20,
     "tags": ["sauce", "caramel"],
-    "image": "/images/cranberry-jam.jpg"
+    "images": []
   }
 ]
